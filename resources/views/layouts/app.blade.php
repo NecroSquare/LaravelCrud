@@ -71,9 +71,9 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
-        <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="nav-link fa-cog">
-            Logout
-        </a>
+        <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>    
     </div>
 
     <!-- Navbar -->
@@ -82,16 +82,22 @@
         <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-user"></i> Alexander Pierce
+                    <i class="fas fa-user"></i> {{ Auth::user()->name ?? 'Guest' }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item fa-user" href=""> Profile</a></li>
-                    <li><form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="nav-link fa-cog">
-                        Logout
-                    </a></li>
+                    <li>
+                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="fas fa-user"></i> Profile
+                        </button>
+                    </li>
+                    <li>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
@@ -100,6 +106,32 @@
     <!-- Content -->
     <div class="content">
         @yield('content')
+    </div>
+
+        <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> {{ Auth::user()->name ?? 'Guest' }}</p>
+                    <p><strong>Email:</strong> {{ Auth::user()->email ?? 'No email available' }}</p>
+                    <p><strong>Phone:</strong> {{ Auth::user()->phone ?? 'No phone number' }}</p>
+                    <p><strong>Address:</strong> {{ Auth::user()->address ?? 'No address provided' }}</p>
+                    <p><strong>Joined:</strong> {{ Auth::user()->created_at->format('d M Y') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="logout-form-modal" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
