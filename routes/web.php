@@ -46,6 +46,15 @@ Route::middleware('auth')->group(function () {
     // 📖 Books (CRUD)
     Route::resource('/crud', BookController::class);
     Route::post('/books/{bookId}/borrow', [LoanController::class, 'borrow'])->name('books.borrow');
+    Route::get('/books', [BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [BookController::class, 'create'])->name('crud.create');
+    Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('crud.edit');
+    Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('crud.destroy');
+    Route::post('/logout', function() {
+        Auth::logout();
+        return redirect('/');
+    })->name('logout');
+
 
     // 📂 Categories (CRUD)
     Route::resource('/categories', CategoryController::class);
@@ -56,5 +65,3 @@ Route::get('/', function () {
     return redirect()->route('loans.index');
 })->middleware('auth');
 
-// 🔗 Home route (optional)
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
