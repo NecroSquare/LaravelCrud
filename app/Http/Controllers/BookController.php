@@ -84,6 +84,10 @@ class BookController extends Controller
         return redirect()->route('crud.index')->with('success', 'Book updated successfully.');
     }
 
+    
+    /**
+     * Handle book loaning process
+     */
     public function destroy($id)
     {
         $book = Book::findOrFail($id);
@@ -96,10 +100,6 @@ class BookController extends Controller
 
         return redirect()->route('crud.index')->with('success', 'Book deleted successfully.');
     }
-
-    /**
-     * Handle book loaning process
-     */
     public function loan(Request $request, $id)
     {
         $request->validate([

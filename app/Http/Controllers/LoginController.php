@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\User;
-
-use function Laravel\Prompts\alert;
 
 class LoginController extends Controller
 {
@@ -16,34 +14,23 @@ class LoginController extends Controller
 
     public function processLogin(Request $request)
     {
-        $user = User::where('name', $request->name)
-                    ->where('email', $request->email)
-                    ->first();
-
-        if (!$user) {
-            return back()->with('error', 'Invalid name or email.');
+        // Validate user credentials and log in
+        if (Auth::attempt(['name' => $request->name, 'email' => $request->email])) {
+            // Redirect to the dashboard after login
+            return redirect()->route('dashboard');
         }
 
-        // Store user in session
-        session(['user' => $user]);
-
-        return redirect()->route('dashboard'); // Redirect to dashboard
+        return back()->withErrors(['login' => 'Invalid credentials']);
     }
 
     public function logout()
     {
-            // Step 1: Destroy session data
-        session()->flush();  
+        // Logout the user and clear session
+        Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
 
-        // Step 2: Invalidate the session
-        session()->invalidate(); 
-
-        // Step 3: Regenerate CSRF token
-        session()->regenerateToken();  
-
-        // Step 4: Redirect and remove session cookie
-        return redirect()->route('login')
-            ->withCookie(cookie()->forget('laravel_session'))
-            ->with('logout_message', 'You have been logged out successfully.');
+        return redirect()->route('login');
     }
 }
+

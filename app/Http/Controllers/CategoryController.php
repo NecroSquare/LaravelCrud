@@ -10,23 +10,35 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_name' => 'required|string|max:255|unique:categories,name',
+            'category_name' => 'required|string|max:255',
         ]);
-
-        $category = Categories::create(['name' => $request->category_name]);
-
-        return response()->json(['success' => true, 'category' => $category]);
+        
+        $exists = Categories::whereRaw('LOWER(name) = ?', [strtolower($request->category_name)])->exists();
+        
+        if ($exists) {
+            return redirect()->back()->with('error', 'Kategori sudah ada!');
+        }
+        
+        Categories::create([
+            'name' => $request->category_name,
+        ]);
+        
+        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan!');
     }
-
-    public function destroy($id)
+    
+        public function destroy(Request $request)
     {
-        $category = Categories::findOrFail($id);
+        $category = Categories::findOrFail($request->category_id);
 
-        // if ($category->books()->count() > 0) {
-        //     return response()->json(['message' => 'category is in use']);
-        // }
+        // Ensure category has no books before deletion
+        if ($category->books()->count() > 0) {
+            return redirect()->back()->with('error', 'Kategori masih memiliki buku.');
+        }
 
         $category->delete();
-        return response()->json(['message' => 'Category has been deleted']);
+
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
     }
+
+
 }

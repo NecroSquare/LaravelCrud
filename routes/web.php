@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
@@ -26,6 +27,9 @@ Route::post('/login', function (Request $request) {
 
     return back()->withErrors(['login' => 'Invalid credentials.']);
 })->name('login.process');
+
+Route::get('register', [RegisterController::class, 'showRegister'])->name('register.show');
+Route::post('register', [RegisterController::class, 'processRegister'])->name('register.process');
 
 // 🔒 Logout
 Route::post('/logout', function () {
@@ -55,6 +59,9 @@ Route::middleware('auth')->group(function () {
 
     // 📂 Categories (CRUD)
     Route::resource('/categories', CategoryController::class);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::delete('/categories', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
 });
 
 // 🌍 Redirect root to loans page

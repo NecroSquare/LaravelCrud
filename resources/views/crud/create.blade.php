@@ -60,101 +60,58 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="categoryForm">
+                    <form action="{{ route('categories.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="category_name" class="form-label">Nama Kategori</label>
                             <input type="text" name="category_name" id="category_name" class="form-control" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap Modal: Delete Category -->
-    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="deleteCategorySelect">Select Category to Delete</label>
-                    <select id="deleteCategorySelect" class="form-control">
-                        <option value="">Choose a category</option>
-                        @foreach ($categories as $category)
-                            @if ($category->books()->count() == 0)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteCategory">Delete</button>
-                </div>
+   <!-- Bootstrap Modal: Delete Category -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hapus Kategori</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('categories.destroy') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">Pilih Kategori</label>
+                        <select name="category_id" id="category_id" class="form-control" required>
+                            <option value="">Pilih Kategori</option>
+                            @foreach($categories as $category)
+                                @if ($category->books()->count() == 0) <!-- Only deletable if no books -->
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+</div>
 @endsection
 
-@section('scripts')
-<script>
-$(document).ready(function() {
-    $('#categoryForm').submit(function(e) {
-        e.preventDefault(); // Prevent normal form submission
 
-        $.ajax({
-            url: "{{ route('categories.store') }}", // Replace with your route
-            method: "POST",
-            data: $(this).serialize(),
-            success: function(response) {
-                if(response.success) {
-                    // Add new category to dropdown
-                    $('#category_id').append(`<option value="${response.category.id}" selected>${response.category.name}</option>`);
-
-                    // Close modal and clear input
-                    $('#addCategoryModal').modal('hide');
-                    $('#category_name').val('');
-                } else {
-                    alert("Gagal menambahkan kategori");
-                }
-            },
-            error: function() {
-                alert("Terjadi kesalahan!");
-            }
-        });
-    });
-
-    $(document).on('click', '#confirmDeleteCategory', function () {
-        let categoryId = $('#deleteCategorySelect').val();
-
-        if (!categoryId) {
-            alert('Please select a category to delete.');
-            return;
-        }
-
-        $.ajax({
-            url: `/categories/${categoryId}`,
-            type: 'DELETE',
-            data: {
-                _token: "{{ csrf_token() }}"
-            },
-            success: function (response) {
-                alert(response.message);
-                setTimeout(function () {
-                    location.reload(); // Refresh page
-                }, 500);
-            },
-            error: function () {
-                alert('Error deleting category. The category is still in use.');
-            }
-        });
-    });
-});
-</script>
-@endsection
