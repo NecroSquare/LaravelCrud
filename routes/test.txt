@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Auth;
+// Home route
+Route::get('/', function () {
+    return redirect()->route('loans.index'); // Redirect to the books index page
+});
+
+// Routes for admin and librarian
+// Route::middleware(['auth', 'role:admin,librarian'])->group(function () {
+    Route::resource('/crud', BookController::class);
+    // Route::resource('/loans', LoanController::class);
+// });
+
+// Route::middleware(['auth', 'role:member'])->group(function () {
+    Route::resource('/loans',LoanController::class); // Members can only view their loans
+// });
+
+Route::post('/loans/{loan}/borrow', [LoanController::class, 'borrow'])->name('loans.borrow');
+Route::patch('/loans/{loan}/return', [LoanController::class, 'return'])->name('loans.return');
+
+
+// Login routes
+Auth::routes();
+
+Route::resource('/categories', CategoryController::class);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route::resource('/crud', BookController::class);
+//     Route::resource('/loans', LoanController::class);
+
+// Routes for members (only viewing books, no management)
