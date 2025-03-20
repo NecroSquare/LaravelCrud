@@ -51,7 +51,7 @@
         <a href="{{ route('crud.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 
-    <!-- Bootstrap Modal: Add Category -->
+    {{-- Add Modal --}}
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-   <!-- Bootstrap Modal: Delete Category -->
+   {{-- Del modal --}}
 <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -94,7 +94,7 @@
                         <select name="category_id" id="category_id" class="form-control" required>
                             <option value="">Pilih Kategori</option>
                             @foreach($categories as $category)
-                                @if ($category->books()->count() == 0) <!-- Only deletable if no books -->
+                                @if ($category->books()->count() == 0) 
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endif
                             @endforeach

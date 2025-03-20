@@ -58,7 +58,6 @@ class BookController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data
         $request->validate([
             'book_title' => 'required|string|max:255',
             'book_description' => 'nullable|string',
@@ -67,10 +66,7 @@ class BookController extends Controller
             'category_id' => 'required|exists:categories,id'
         ]);
 
-        // Retrieve the book
         $book = Book::findOrFail($id);
-
-        // Update book details
         $book->update([
             'title' => $request->book_title,
             'description' => $request->book_description,
@@ -78,24 +74,15 @@ class BookController extends Controller
             'isbn' => $request->book_isbn,
         ]);
 
-        // Update category association
         $book->categories()->sync([$request->category_id]);
 
         return redirect()->route('crud.index')->with('success', 'Book updated successfully.');
     }
 
-    
-    /**
-     * Handle book loaning process
-     */
     public function destroy($id)
     {
         $book = Book::findOrFail($id);
-        
-        // Delete loans associated with the book
         $book->loans()->delete();
-        
-        // Delete the book
         $book->delete();
 
         return redirect()->route('crud.index')->with('success', 'Book deleted successfully.');
@@ -109,12 +96,10 @@ class BookController extends Controller
 
         $book = Book::findOrFail($id);
 
-        // Check if the book is already on loan
         if ($book->loans()->whereNull('returned_at')->exists()) {
             return redirect()->back()->with('error', 'This book is already on loan.');
         }
 
-        // Create a new loan record
         Loan::create([
             'book_id' => $book->id,
             'member_id' => $request->member_id,
@@ -125,9 +110,6 @@ class BookController extends Controller
         return redirect()->route('crud.index')->with('success', 'Book loaned successfully.');
     }
 
-    /**
-     * Handle book return process
-     */
     public function returnBook($id)
     {
         $loan = Loan::where('book_id', $id)->whereNull('returned_at')->first();
@@ -136,7 +118,6 @@ class BookController extends Controller
             return redirect()->back()->with('error', 'This book is not currently loaned.');
         }
 
-        // Mark the book as returned
         $loan->update(['returned_at' => now()]);
 
         return redirect()->route('crud.index')->with('success', 'Book returned successfully.');

@@ -14,10 +14,8 @@ class LoginController extends Controller
 
     public function processLogin(Request $request)
     {
-        // Validate user credentials and log in
         if (Auth::attempt(['name' => $request->name, 'email' => $request->email])) {
-            // Redirect to the dashboard after login
-            return redirect()->route('dashboard');
+            return redirect()->route('loans.index');
         }
 
         return back()->withErrors(['login' => 'Invalid credentials']);
@@ -25,7 +23,6 @@ class LoginController extends Controller
 
     public function logout()
     {
-        // Logout the user and clear session
         Auth::logout();
         session()->invalidate();
         session()->regenerateToken();

@@ -12,7 +12,6 @@ class RoleMiddleware
         $user = session('user');
 
         if (!$user || !in_array($user->role, explode(',', $roles))) {
-            // return redirect()->route('loans.index'); // Redirect unauthorized users
             abort(403, 'Unauthorized');
         }
 

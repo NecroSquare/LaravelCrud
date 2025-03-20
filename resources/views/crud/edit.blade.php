@@ -53,7 +53,7 @@
         <a href="{{ route('crud.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 
-     <!-- Bootstrap Modal: Add Category -->
+     {{-- Add modal --}}
      <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -78,7 +78,7 @@
         </div>
     </div>
 
-   <!-- Bootstrap Modal: Delete Category -->
+   {{-- Del modal --}}
 <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

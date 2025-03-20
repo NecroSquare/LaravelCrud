@@ -25,9 +25,9 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->unique()->phoneNumber(), // ✅ Add required phone
-            'address' => fake()->address(), // ✅ Add required address
-            'role' => fake()->randomElement(['librarian', 'member', 'admin']), // ✅ Add role
+            'phone' => fake()->unique()->phoneNumber(), 
+            'address' => fake()->address(), 
+            'role' => fake()->randomElement(['librarian', 'member', 'admin']), 
         ];
     }
 }

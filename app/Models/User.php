@@ -10,7 +10,6 @@ class User extends Authenticatable
 {
     use HasFactory, SoftDeletes;
 
-    // Define role constants
     public const ROLE_ADMIN = 'admin';
     public const ROLE_LIBRARIAN = 'librarian';
     public const ROLE_MEMBER = 'member';
@@ -23,19 +22,16 @@ class User extends Authenticatable
         'role'
     ];
 
-    // Relationship: Members can have many loans
     public function memberLoans()
     {
         return $this->hasMany(Loan::class, 'member_id');
     }
 
-    // Relationship: Librarians manage many loans
     public function librarianLoans()
     {
         return $this->hasMany(Loan::class, 'librarian_id');
     }
 
-    // Role Check Methods
     public function isAdmin()
     {
         return $this->role === self::ROLE_ADMIN;

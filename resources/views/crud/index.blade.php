@@ -43,7 +43,6 @@
                     </td>
                 </tr>
 
-                <!-- View Modal -->
                 <div class="modal fade" id="viewModal{{ $book->id }}" tabindex="-1" aria-labelledby="viewModalLabel{{ $book->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -65,7 +64,6 @@
                     </div>
                 </div>
             </div>
-                <!-- End View Modal -->
 
             @empty
                 <tr>

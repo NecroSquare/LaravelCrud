@@ -16,7 +16,6 @@ class RegisterController extends Controller
 
 public function processRegister(Request $request)
 {
-    // Validate the form data
     $validator = Validator::make($request->all(), [
         'name' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:users,email',
@@ -24,24 +23,20 @@ public function processRegister(Request $request)
         'address' => 'required|string',
     ]);
 
-    // If validation fails
     if ($validator->fails()) {
         return back()->withErrors($validator)->withInput();
     }
 
-    // Create the user (role will be set to 'member' by default)
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'phone' => $request->phone,
         'address' => $request->address,
-        'role' => 'member',  // Set default role as 'member'
+        'role' => 'member',  
     ]);
+  
+    Auth::login($user);  
 
-    // Log the user in
-    Auth::login($user);  // This will authenticate the user and create a session
-
-    // Redirect to CRUD page after successful registration
-    return redirect()->route('crud.index'); // Redirect to the desired route after registration
+    return redirect()->route('crud.index'); 
 }   
 }

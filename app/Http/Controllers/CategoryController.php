@@ -30,7 +30,6 @@ class CategoryController extends Controller
     {
         $category = Categories::findOrFail($request->category_id);
 
-        // Ensure category has no books before deletion
         if ($category->books()->count() > 0) {
             return redirect()->back()->with('error', 'Kategori masih memiliki buku.');
         }
